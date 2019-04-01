@@ -1,0 +1,24 @@
+{
+  "name": "vuex-module-validatable-state",
+  "version": "1.0.0-0",
+  "description": "Simple Vuex module to validate state for handling form",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/indiegogo/vuex-module-validatable-state.git"
+  },
+  "keywords": [
+    "vuex",
+    "vue",
+    "validation"
+  ],
+  "author": "Kengo Hamasaki <kengo@indiegogo.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/indiegogo/vuex-module-validatable-state/issues"
+  },
+  "homepage": "https://github.com/indiegogo/vuex-module-validatable-state#readme"
+}
