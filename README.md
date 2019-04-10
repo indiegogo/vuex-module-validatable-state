@@ -37,36 +37,31 @@ export {
 
 Then your Vuex store gets:
 
-- Getters
-    - `allFieldsValid`
-      - Returns boolean whether all fields don't have error
-    - `filedValues`
-      - Returns all fields as `{ fieldName: value }`
-    - `filedErrors`
-      - Retuns all errors as `{ fieldName: errorMessage }`
-    - `fieldEditabilities`
-      - Returns all editable flags as `{ fieldName: editability }`
-    - `fieldDirtinesses` (might be removed)
-      - Returns all dirtiness flags as `{ fieldName: dirtiness }`
-    - `anyFieldChanged`
-      - Returns boolean wether all fields are not dirty
-- Actions (Import `ActionTypes` from the module)
-    - `ActionTypes.SET_FIELD`
-      - Set value for a field, then runs validation if enabled
-    - `ActionTypes.SET_FIELDS_BULK`
-      - Set values for fields at once, then make all dirtiness flags false
-    - `ActionTypes.RESET_FIELDS`
-      - Reset values on field with initial values
-    - `ActionTypes.ENABLE_ALL_VALIDATIONS`
-      - Enable interactive validation and run validations for all fields
-    - `ActionTypes.VALIDATE_FIELD_VALUE`
-      - Run validate specific field
-    - `ActionTypes.VALIDATE_FIELDS`
-      - Run validate all fields
-    - `ActionTypes.SET_FIELDS_EDITABILITY`
-      - Set editability flag for a field, disabled field is not updated nor validated
-    - `ActionTypes.SET_FIELDS_PRISTINE`
-      - Make all dirtiness flags false
+### Getters
+
+|**Getter name**|**Returns**|
+---|---
+|`allFieldsValid`|`boolean` whether all fields don't have error|
+|`filedValues`|All fields as `{ fieldName: value }`|
+|`filedErrors`|All errors as `{ fieldName: errorMessage }`|
+|`fieldEditabilities`|All editable flags as `{ fieldName: editability }`|
+|`fieldDirtinesses` (might be removed)|All dirtiness flags as `{ fieldName: dirtiness }`
+|`anyFieldChanged`|`boolean` wether all fields are not dirty|
+
+### Actions
+
+Import `ActionTypes` from the module.
+
+|**Action name**|**Runs**|
+---|---
+|`ActionTypes.SET_FIELD`|Set value for a field, then runs validation if enabled|
+|`ActionTypes.SET_FIELDS_BULK`|Set values for fields at once, then make all dirtiness flags false|
+|`ActionTypes.RESET_FIELDS`|Reset values on field with initial values|
+|`ActionTypes.ENABLE_ALL_VALIDATIONS`|Enable interactive validation and run validations for all fields|
+|`ActionTypes.VALIDATE_FIELD_VALUE`|Validate specific field|
+|`ActionTypes.VALIDATE_FIELDS`|Validate all fields|
+|`ActionTypes.SET_FIELDS_EDITABILITY`|Set editability flag for a field, disabled field is not updated nor validated|
+|`ActionTypes.SET_FIELDS_PRISTINE`|Make all dirtiness flags false|
 
 ## Validators
 
