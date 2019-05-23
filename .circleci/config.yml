@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  with_node8: &with_node8
+    docker:
+      - image: node:8
+        environment:
+          NODE_VERSION: 8
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - npm-{{ checksum "package-lock.json" }}-{{ .Environment.NODE_VERSION }}-v1
+            - npm-
+
+      - run:
+          name: Install NPM modules
+          command: npm install
+
+      - run:
+          name: Build module
+          command: npm run build
+
+      - run:
+          name: Run test
+          command: npm run test
+
+      - save_cache:
+          key: npm-{{ checksum "package-lock.json" }}-{{ .Environment.NODE_VERSION }}-v1
+          paths:
+            - ~/node_modules
+
+  with_node10:
+    <<: *with_node8
+    docker:
+      - image: node:10
+        environment:
+          NODE_VERSION: 10
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - with_node8
+      - with_node10
