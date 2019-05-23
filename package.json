@@ -26,15 +26,19 @@
     "url": "https://github.com/indiegogo/vuex-module-validatable-state/issues"
   },
   "homepage": "https://github.com/indiegogo/vuex-module-validatable-state#readme",
-  "dependencies": {
-    "vuex": "^3.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@types/jest": "24.0.13",
     "jest": "24.5.0",
     "rollup": "1.7.4",
     "rollup-plugin-commonjs": "9.2.2",
     "rollup-plugin-typescript2": "0.20.1",
     "ts-jest": "24.0.1",
-    "typescript": "3.4.1"
+    "typescript": "3.4.5",
+    "vue": "2.6.10",
+    "vuex": "3.1.1"
+  },
+  "jest": {
+    "preset": "ts-jest"
   }
 }
