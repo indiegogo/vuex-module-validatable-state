@@ -1,8 +1,5 @@
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 
-type moduleKey = "vuexValidatableFields";
-const moduleStateKey: moduleKey = "vuexValidatableFields";
-
 interface FormField<T> {
   value: T;
   error: string | false;
@@ -18,7 +15,7 @@ const initialStateOfField = <T>(initialValue: T): FormField<T> => ({
 });
 
 interface ValidatableFieldsState<T> {
-  [moduleStateKey]: {
+  vuexValidatableFields: {
     [K in keyof T]: FormField<T[K]>;
   };
 };
@@ -83,7 +80,7 @@ export enum ActionTypes {
   SET_FIELDS_PRISTINE = "vuexValidatableFieldSetFieldsPristine"
 }
 interface InternalState<F> {
-  fields: ValidatableFieldsState<F>[moduleKey];
+  fields: ValidatableFieldsState<F>["vuexValidatableFields"];
   validates: boolean;
 }
 
@@ -263,7 +260,7 @@ export default function <F extends {}> (
   };
 
   return {
-    [moduleStateKey]: {
+    vuexValidatableFields: {
       state: {
         ...stateFields
       },
