@@ -1,5 +1,8 @@
 # vuex-module-validatable-state
 
+[![npm](https://img.shields.io/npm/v/vuex-module-validatable-state.svg?style=for-the-badge)](https://www.npmjs.com/package/vuex-module-validatable-state)
+[![CircleCI](https://img.shields.io/circleci/project/github/indiegogo/vuex-module-validatable-state/master.svg?style=for-the-badge)](https://circleci.com/gh/indiegogo/vuex-module-validatable-state)
+
 Simple Vuex module to handle form fields and validations
 
 ### Usage
