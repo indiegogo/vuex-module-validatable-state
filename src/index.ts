@@ -53,12 +53,12 @@ export type FieldDirtinesses<F> = {
 export type SetFieldAction<F> = <T extends keyof F>(payload: { name: T ; value: F[T]; }) => void;
 
 export enum GetterTypes {
-  ALL_FIELDS_VALID = "vuexValidatbleFieldAllFieldsValid",
-  ANY_FIELD_CHANGED = "vuexValidatbleFieldanyFieldChanged",
-  FIELD_VALUES = "vuexValidatbleFieldfieldValues",
-  FIELD_ERRORS = "vuexValidatbleFieldfieldErrors",
-  FIELD_EDITABILITIES = "vuexValidatbleFieldfieldEditabilities",
-  FIELD_DIRTINESSES = "vuexValidatbleFieldfieldDirtinesses"
+  ALL_FIELDS_VALID = "vuexValidatableFieldAllFieldsValid",
+  ANY_FIELD_CHANGED = "vuexValidatableFieldanyFieldChanged",
+  FIELD_VALUES = "vuexValidatableFieldfieldValues",
+  FIELD_ERRORS = "vuexValidatableFieldfieldErrors",
+  FIELD_EDITABILITIES = "vuexValidatableFieldfieldEditabilities",
+  FIELD_DIRTINESSES = "vuexValidatableFieldfieldDirtinesses"
 }
 
 enum MutationTypes {
@@ -73,14 +73,14 @@ enum MutationTypes {
 }
 
 export enum ActionTypes {
-  SET_FIELD_VALUE = "vuexValidatbleFieldSetFieldValue",
-  SET_FIELD_EDITABILITY = "vuexValidatbleFieldSetFieldEditability",
-  SET_FIELDS_BULK = "vuexValidatbleFieldSetFieldsBulk",
-  SET_FIELD_EDITABILITIES_BULK = "vuexValidatbleFieldSetFieldEditabilitiesBulk",
-  RESET_FIELDS = "vuexValidatbleFieldResetFields",
-  VALIDATE_FIELDS = "vuexValidatbleFieldValidateFields",
-  ENABLE_ALL_VALIDATIONS = "vuexValidatbleFieldEnableAllValidations",
-  SET_FIELDS_PRISTINE = "vuexValidatbleFieldSetFieldsPristine"
+  SET_FIELD_VALUE = "vuexValidatableFieldSetFieldValue",
+  SET_FIELD_EDITABILITY = "vuexValidatableFieldSetFieldEditability",
+  SET_FIELDS_BULK = "vuexValidatableFieldSetFieldsBulk",
+  SET_FIELD_EDITABILITIES_BULK = "vuexValidatableFieldSetFieldEditabilitiesBulk",
+  RESET_FIELDS = "vuexValidatableFieldResetFields",
+  VALIDATE_FIELDS = "vuexValidatableFieldValidateFields",
+  ENABLE_ALL_VALIDATIONS = "vuexValidatableFieldEnableAllValidations",
+  SET_FIELDS_PRISTINE = "vuexValidatableFieldSetFieldsPristine"
 }
 interface InternalState<F> {
   fields: ValidatableFieldsState<F>[moduleKey];

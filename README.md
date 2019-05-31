@@ -7,7 +7,7 @@ Simple Vuex module to handle form fields and validations
 Add to your Vuex store definition:
 
 ```ts
-import vuexValidatableFieldModule from "./the-module";
+import validatableStateModule from "vuex-module-validatable-state";
 
 const initialFields = {
   amount: null,
@@ -30,7 +30,7 @@ export {
   actions,
   mutations,
   modules: {
-    ...vuexValidatableFieldModule(initialFields, validators) // <--HERE
+    ...validatableStateModule(initialFields, validators) // <--HERE
   }
 }
 ```
@@ -41,12 +41,12 @@ Then your Vuex store gets:
 
 |**Getter name**|**Returns**|
 ---|---
-|`allFieldsValid`|`boolean` whether all fields don't have error|
-|`filedValues`|All fields as `{ fieldName: value }`|
-|`filedErrors`|All errors as `{ fieldName: errorMessage }`|
-|`fieldEditabilities`|All editable flags as `{ fieldName: editability }`|
-|`fieldDirtinesses` (might be removed)|All dirtiness flags as `{ fieldName: dirtiness }`
-|`anyFieldChanged`|`boolean` wether all fields are not dirty|
+|`GetterTypes.ALL_FIELDS_VALID`|`boolean` whether all fields don't have error|
+|`GetterTypes.FIELD_VALUES`|All fields as `{ [fieldName]: value }`|
+|`GetterTypes.FIELD_ERRORS`|All errors as `{ [fieldName]: errorMessage }`|
+|`GetterTypes.FIELD_EDITABILITIES`|All editable flags as `{ [fieldName]: editability }`|
+|`GetterTypes.FIELD_DIRTINESSES`|All dirtiness flags as `{ [fieldName]: dirtiness }`|
+|`GetterTypes.ANY_FIELD_CHANGED`|`boolean` whether all fields are not dirty|
 
 ### Actions
 
@@ -77,24 +77,30 @@ validators = {
 Each validator can take all fields values to run validation:
 
 ```ts
-({ amount, description }) => /* return false or errorMessage */
+  amount: [
+    ({ amount, description }) => /* return false or errorMessage */
+  ]
 ```
 
-Optionally, can take getters on the same store (In our case perk-form module's getter comes)
+Optionally, can take getters on the store which calls this module:
 
 ```ts
-({ amount }, getters) => getters.projectItems // This works!
+  description: [
+    ({ description }, getters) => getters.getterOnStore && validationLogicIfGetterOnStoreIsTruthy(description)
+  ]
 ```
 
-And you can request "interactive validation" which valites every time `SET_FIELD` is called
+And you can request "interactive validation" which valites every time `dispatch(ActionTypes.SET_FIELD)` is called
 
 ```ts
-({ amount }) => [/* validator logic */, { instant: true }]
+  amount: [
+    [({ amount }, getters) => /* validator logic */, { instant: true }]
+  ]
 ```
 
 ## Provided typings
 
-You can import handy type definitions from the module.
+You can import handy type/interface definitions from the module.
 The generic `T` in below expects fields type like:
 
 ```ts
@@ -103,6 +109,8 @@ interface FieldValues {
   description: string;
 }
 ```
+
+`getters[GetterTypes.FIELD_VALUES]` returns values with following `FieldValues` interface.
 
 <details>
 <summary>See all typings</summary>
@@ -115,21 +123,21 @@ As like ActionTree, MutationTree, you can receive type guards for Validators. By
 
 ### `SetFieldAction<T>`
 
-It's the type definition of SET_FIELD action, you can get type guard for your fields by giving Generics.
+It's the type definition of the payload for dispatching `ActionTypes.SET_FIELD`, you can get type guard for your fields by giving Generics.
 
 ![image](https://user-images.githubusercontent.com/21182617/53462201-dd0f8d00-39f7-11e9-81f8-a927a96c75b4.png)
 
 ### `FieldValidationErrors<T>`
 
-Type for `getters.filedErrors`
+Type for `getters[GetterTypes.FIELD_ERRORS]`
 
 ### `FieldEditabilities<T>`
 
-Type for `getters.filedEditabilities`
+Type for `getters[GetterTypes.FIELD_EDITABILITIES]`
 
 ### `FieldDirtinesses<T>`
 
-Type for `getters.fieldDirtinesses`
+Type for `getters[GetterTypes.FIELD_DIRTINESSES]`
 
 </details>
 
