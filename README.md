@@ -64,6 +64,21 @@ new Vuex.Store({
 ```ts
 import validatableModule from "vuex-module-validatable-state";
 
+const initialFields = {
+  amount: null,
+  description: "default text"
+};
+
+const validators = {
+  amount: [
+    ({ amount }) => amount === null ? "Require this" : false
+  ],
+  description: [
+    ({ description }) => description.length > 15 ? "Should be shorter than 15" : false,
+    ({ description, amount }) => description.indexOf(amount.toString())  ? "Should include amount" : false,
+  ]
+};
+
 const store = new Vuex.Store({
   modules: {
     myForm: {
@@ -76,11 +91,13 @@ const store = new Vuex.Store({
   }
 });
 
-store.registerModule(["form-project-create", "vuexValidatableFields"], validatableModule(initialFields, {})["vuexValidatableFields"]);
+store.registerModule(["form-project-create", "vuexValidatableFields"], validatableModule(initialFields, validators)["vuexValidatableFields"]);
 ```
 </details>
 
-### Provided Getters
+### Map to Components
+
+#### Provided Getters
 
 |**Getter name**|**Returns**|
 ---|---
@@ -91,7 +108,7 @@ store.registerModule(["form-project-create", "vuexValidatableFields"], validatab
 |`GetterTypes.FIELD_DIRTINESSES`|All dirtiness flags as `{ [fieldName]: dirtiness }`|
 |`GetterTypes.ANY_FIELD_CHANGED`|`boolean` whether all fields are not dirty|
 
-### Provided Actions
+#### Provided Actions
 
 Import `ActionTypes` from the module.
 
