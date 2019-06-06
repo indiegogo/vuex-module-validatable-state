@@ -91,7 +91,7 @@ const store = new Vuex.Store({
   }
 });
 
-register(store, "form-project-create", initialFields, validators);
+register(store, "myForm", initialFields, validators);
 ```
 </details>
 
