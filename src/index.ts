@@ -272,6 +272,28 @@ const buildModule = <S, F>(
 }
 
 export default buildModule;
+
+/**
+ * Function to register validatable state module to the instance of Vuex.Store
+ * @param store - The instance of Vuex.Store which is registered this module
+ * @param parentNameSpace - Namespace (slash separated) which this module belongs: "", undefined means root
+ * @param initialFields - Field names with initial variable
+ * @param validators - Validators for each field
+ * @example
+ * register(
+ *   store,
+ *   "user/user-profile-form"
+ *   { name: null, age: null },
+ *   {
+ *     name: [
+ *       ({ name }) => name && name.length > 2
+ *     ],
+ *     age: [
+ *       ({ age }) => age && age > 0
+ *     ]
+ *   }
+ * )
+ */
 export const register = <S extends {}, F extends {}>(store: Store<S>, parentNameSpace: string = "", initialFields: F, validators: ValidatorTree<F>) => {
   const namespace: string[] = (parentNameSpace + "/validatableState").split("/").filter((name) => name !== "");
   store.registerModule(namespace, buildModule<S, F>(initialFields, validators)["validatableState"]);
