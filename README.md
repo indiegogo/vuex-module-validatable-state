@@ -62,7 +62,7 @@ new Vuex.Store({
   <summary>B. Register to existing module</summary>
 
 ```ts
-import validatableModule from "vuex-module-validatable-state";
+import { register } from "vuex-module-validatable-state";
 
 const initialFields = {
   amount: null,
@@ -91,7 +91,7 @@ const store = new Vuex.Store({
   }
 });
 
-store.registerModule(["form-project-create", "vuexValidatableFields"], validatableModule(initialFields, validators)["vuexValidatableFields"]);
+register(store, "form-project-create", initialFields, validators);
 ```
 </details>
 
