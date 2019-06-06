@@ -3,14 +3,28 @@
 [![npm](https://img.shields.io/npm/v/vuex-module-validatable-state.svg?style=for-the-badge)](https://www.npmjs.com/package/vuex-module-validatable-state)
 [![CircleCI](https://img.shields.io/circleci/project/github/indiegogo/vuex-module-validatable-state/master.svg?style=for-the-badge)](https://circleci.com/gh/indiegogo/vuex-module-validatable-state)
 
-Simple Vuex module to handle form fields and validations
+Simple Vuex module to handle form fields and validations.
 
-### Usage
+## Usage
 
-Add to your Vuex store definition:
+### Installation
+
+```
+$ npm i vuex-module-validatable-state
+```
+
+### Register to core Vuex module
+
+This module provides the function to return Vuex module as default. The function takes arguments:
+
+- Initial field set
+- Validators
+ 
+<details>
+  <summary>A. Define directly</summary>
 
 ```ts
-import validatableStateModule from "vuex-module-validatable-state";
+import validatableModule from "vuex-module-validatable-state";
 
 const initialFields = {
   amount: null,
@@ -27,20 +41,46 @@ const validators = {
   ]
 };
 
-export {
-  store,
-  getters,
-  actions,
-  mutations,
+new Vuex.Store({
   modules: {
-    ...validatableStateModule(initialFields, validators) // <--HERE
+    myForm: {
+      namespaced: true
+      store,
+      getters,
+      actions,
+      mutations,
+      modules: {
+        ...validatableModule(initialFields, validators) // <-- HERE
+      }
+    }
   }
-}
+});
 ```
+</details>
 
-Then your Vuex store gets:
+<details>
+  <summary>B. Register to existing module</summary>
 
-### Getters
+```ts
+import validatableModule from "vuex-module-validatable-state";
+
+const store = new Vuex.Store({
+  modules: {
+    myForm: {
+      namespaced: true
+      store,
+      getters,
+      actions,
+      mutations
+    }
+  }
+});
+
+store.registerModule(["form-project-create", "vuexValidatableFields"], validatableModule(initialFields, {})["vuexValidatableFields"]);
+```
+</details>
+
+### Provided Getters
 
 |**Getter name**|**Returns**|
 ---|---
@@ -51,7 +91,7 @@ Then your Vuex store gets:
 |`GetterTypes.FIELD_DIRTINESSES`|All dirtiness flags as `{ [fieldName]: dirtiness }`|
 |`GetterTypes.ANY_FIELD_CHANGED`|`boolean` whether all fields are not dirty|
 
-### Actions
+### Provided Actions
 
 Import `ActionTypes` from the module.
 
@@ -66,7 +106,7 @@ Import `ActionTypes` from the module.
 |`ActionTypes.SET_FIELDS_EDITABILITY`|Set editability flag for a field, disabled field is not updated nor validated|
 |`ActionTypes.SET_FIELDS_PRISTINE`|Make all dirtiness flags false|
 
-## Validators
+### Validators
 
 You can pass validators when you initialize the module.
 
@@ -101,7 +141,7 @@ And you can request "interactive validation" which valites every time `dispatch(
   ]
 ```
 
-## Provided typings
+### Provided Typings
 
 You can import handy type/interface definitions from the module.
 The generic `T` in below expects fields type like:
@@ -118,27 +158,27 @@ interface FieldValues {
 <details>
 <summary>See all typings</summary>
 
-### `ValidatorTree<T>`
+#### `ValidatorTree<T>`
 
 As like ActionTree, MutationTree, you can receive type guards for Validators. By giving your fields' type for Generics, validator can get more guards for each fields:
 
 ![image](https://user-images.githubusercontent.com/21182617/53462133-a174c300-39f7-11e9-9b73-a16e6f064193.png)
 
-### `SetFieldAction<T>`
+#### `SetFieldAction<T>`
 
 It's the type definition of the payload for dispatching `ActionTypes.SET_FIELD`, you can get type guard for your fields by giving Generics.
 
 ![image](https://user-images.githubusercontent.com/21182617/53462201-dd0f8d00-39f7-11e9-81f8-a927a96c75b4.png)
 
-### `FieldValidationErrors<T>`
+#### `FieldValidationErrors<T>`
 
 Type for `getters[GetterTypes.FIELD_ERRORS]`
 
-### `FieldEditabilities<T>`
+#### `FieldEditabilities<T>`
 
 Type for `getters[GetterTypes.FIELD_EDITABILITIES]`
 
-### `FieldDirtinesses<T>`
+#### `FieldDirtinesses<T>`
 
 Type for `getters[GetterTypes.FIELD_DIRTINESSES]`
 
