@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import theModule, { ActionTypes, GetterTypes } from "../src/index";
 
 Vue.use(Vuex);
-const moduleInternalKey = "vuexValidatableFields";
+const moduleInternalKey = "validatableState";
 
 describe("vuex-validatable-field-module", () => {
   const setupStore = (opt: { initialFields?: {}; validators?: {}; gettersOnCaller? : {}; } = {}) => {

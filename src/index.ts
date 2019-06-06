@@ -15,7 +15,7 @@ const initialStateOfField = <T>(initialValue: T): FormField<T> => ({
 });
 
 interface ValidatableFieldsState<T> {
-  vuexValidatableFields: {
+  validatableState: {
     [K in keyof T]: FormField<T[K]>;
   };
 };
@@ -50,12 +50,12 @@ export type FieldDirtinesses<F> = {
 export type SetFieldAction<F> = <T extends keyof F>(payload: { name: T ; value: F[T]; }) => void;
 
 export enum GetterTypes {
-  ALL_FIELDS_VALID = "vuexValidatableFieldAllFieldsValid",
-  ANY_FIELD_CHANGED = "vuexValidatableFieldanyFieldChanged",
-  FIELD_VALUES = "vuexValidatableFieldfieldValues",
-  FIELD_ERRORS = "vuexValidatableFieldfieldErrors",
-  FIELD_EDITABILITIES = "vuexValidatableFieldfieldEditabilities",
-  FIELD_DIRTINESSES = "vuexValidatableFieldfieldDirtinesses"
+  ALL_FIELDS_VALID = "validatableStateAllFieldsValid",
+  ANY_FIELD_CHANGED = "validatableStateAnyFieldChanged",
+  FIELD_VALUES = "validatableStateFieldValues",
+  FIELD_ERRORS = "validatableStateFieldErrors",
+  FIELD_EDITABILITIES = "validatableStateFieldEditabilities",
+  FIELD_DIRTINESSES = "validatableStateFieldDirtinesses"
 }
 
 enum MutationTypes {
@@ -70,17 +70,17 @@ enum MutationTypes {
 }
 
 export enum ActionTypes {
-  SET_FIELD_VALUE = "vuexValidatableFieldSetFieldValue",
-  SET_FIELD_EDITABILITY = "vuexValidatableFieldSetFieldEditability",
-  SET_FIELDS_BULK = "vuexValidatableFieldSetFieldsBulk",
-  SET_FIELD_EDITABILITIES_BULK = "vuexValidatableFieldSetFieldEditabilitiesBulk",
-  RESET_FIELDS = "vuexValidatableFieldResetFields",
-  VALIDATE_FIELDS = "vuexValidatableFieldValidateFields",
-  ENABLE_ALL_VALIDATIONS = "vuexValidatableFieldEnableAllValidations",
-  SET_FIELDS_PRISTINE = "vuexValidatableFieldSetFieldsPristine"
+  SET_FIELD_VALUE = "validatableStateSetFieldValue",
+  SET_FIELD_EDITABILITY = "validatableStateSetFieldEditability",
+  SET_FIELDS_BULK = "validatableStateSetFieldsBulk",
+  SET_FIELD_EDITABILITIES_BULK = "validatableStateSetFieldEditabilitiesBulk",
+  RESET_FIELDS = "validatableStateResetFields",
+  VALIDATE_FIELDS = "validatableStateValidateFields",
+  ENABLE_ALL_VALIDATIONS = "validatableStateEnableAllValidations",
+  SET_FIELDS_PRISTINE = "validatableStateSetFieldsPristine"
 }
 interface InternalState<F> {
-  fields: ValidatableFieldsState<F>["vuexValidatableFields"];
+  fields: ValidatableFieldsState<F>["validatableState"];
   validates: boolean;
 }
 
@@ -89,7 +89,7 @@ interface InternalState<F> {
  * @param initialFields - Field names with initial variable
  * @param validators - Validators for each field
  * @example
- * vuexValidatableFieldModule(
+ * validatableStateModule(
  *   { name: null, age: null },
  *   {
  *     name: [
@@ -260,7 +260,7 @@ export default function <F extends {}> (
   };
 
   return {
-    vuexValidatableFields: {
+    validatableState: {
       state: {
         ...stateFields
       },
