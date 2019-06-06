@@ -1,4 +1,4 @@
-import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { ActionTree, GetterTree, MutationTree, Store } from "vuex";
 
 interface FormField<T> {
   value: T;
@@ -89,7 +89,7 @@ interface InternalState<F> {
  * @param initialFields - Field names with initial variable
  * @param validators - Validators for each field
  * @example
- * validatableStateModule(
+ * buildModule(
  *   { name: null, age: null },
  *   {
  *     name: [
@@ -101,16 +101,16 @@ interface InternalState<F> {
  *   }
  * )
  */
-export default function <F extends {}> (
+const buildModule = <S, F>(
   initialFields: F,
   validators: ValidatorTree<F>
-) {
+) => {
   const stateFields = { fields: {}, validates: false } as InternalState<F>; // fields is not fulfilling the actual type...
   (Object.entries(initialFields) as [keyof F, F[keyof F]][]).forEach(([key, initialValue]) => {
     stateFields.fields[key] = initialStateOfField(initialValue);
   });
 
-  const getters: GetterTree<InternalState<F>, {}> = {
+  const getters: GetterTree<InternalState<F>, S> = {
     [GetterTypes.ALL_FIELDS_VALID] ({ fields }): boolean {
       return Object.keys(fields).every((name: string) => fields[name].disabled || fields[name].error === false);
     },
@@ -196,7 +196,7 @@ export default function <F extends {}> (
     }
   };
 
-  const actions: ActionTree<InternalState<F>, {}> = {
+  const actions: ActionTree<InternalState<F>, S> = {
     async [ActionTypes.SET_FIELD_VALUE] <T extends keyof F> ({ state, commit, dispatch }, { name, value }: { name: T; value: F[T]; }) {
       if (!state.fields[name].disabled) {
         commit(MutationTypes.SET_FIELD_DIRTINESS, { name, dirty: true });
@@ -269,4 +269,10 @@ export default function <F extends {}> (
       actions
     }
   };
+}
+
+export default buildModule;
+export const register = <S extends {}, F extends {}>(store: Store<S>, parentNameSpace: string = "", initialFields: F, validators: ValidatorTree<F>) => {
+  const namespace: string[] = (parentNameSpace + "/validatableState").split("/").filter((name) => name !== "");
+  store.registerModule(namespace, buildModule<S, F>(initialFields, validators)["validatableState"]);
 }

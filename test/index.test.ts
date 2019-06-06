@@ -1,27 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import theModule, { ActionTypes, GetterTypes } from "../src/index";
+import { register, ActionTypes, GetterTypes } from "../src/index";
 
 Vue.use(Vuex);
 const moduleInternalKey = "validatableState";
 
 describe("vuex-validatable-field-module", () => {
   const setupStore = (opt: { initialFields?: {}; validators?: {}; gettersOnCaller? : {}; } = {}) => {
-    const fields = opt.initialFields || {
+    const initialFields = opt.initialFields || {
       name: null,
       age: null,
       subscribed: false
     };
 
-    return new Vuex.Store({
+    const store = new Vuex.Store({
       state: {},
       getters: opt.gettersOnCaller || {},
       actions: {},
       mutations: {},
-      modules: {
-        ...theModule(fields, opt.validators || {})
-      }
     });
+
+    register(store, "", initialFields, opt.validators || {});
+    return store;
   };
 
   describe("Initializing", () => {
