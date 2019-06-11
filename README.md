@@ -134,7 +134,7 @@ Import `ActionTypes` from the module.
 You can pass validators when you initialize the module.
 
 ```ts
-validators = {
+const validators = {
   amount: [/* validators for filling error against to amount */],
   description: [/* validators for filling error against to description */]
 }
@@ -143,25 +143,31 @@ validators = {
 Each validator can take all fields values to run validation:
 
 ```ts
+const validators = {
   amount: [
     ({ amount, description }) => /* return false or errorMessage */
   ]
+}
 ```
 
 Optionally, can take getters on the store which calls this module:
 
 ```ts
+const validators = {
   description: [
     ({ description }, getters) => getters.getterOnStore && validationLogicIfGetterOnStoreIsTruthy(description)
   ]
+}
 ```
 
 And you can request "interactive validation" which valites every time `dispatch(ActionTypes.SET_FIELD)` is called
 
 ```ts
+const validators = {
   amount: [
     [({ amount }, getters) => /* validator logic */, { instant: true }]
   ]
+}
 ```
 
 ### Provided Typings
