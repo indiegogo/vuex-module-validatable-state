@@ -5,6 +5,12 @@
 
 Simple Vuex module to handle form fields and validations.
 
+![190611_module](https://user-images.githubusercontent.com/85887/59253812-dcd08180-8be3-11e9-922d-c5c6e6a2e777.gif)
+
+You can build a view model for your form, which runs valdations easily. You just provide initial fields and validators to build the module, then map getters/actions to components.
+
+Play in [this sandbox](https://o46g3.codesandbox.io/).
+
 ## Usage
 
 ### Installation
@@ -201,6 +207,99 @@ Type for `getters[GetterTypes.FIELD_DIRTINESSES]`
 
 </details>
 
-## Real sample of Vuex Store with this module and component
+## Working Sample
 
-- Write it
+[![Edit Sample: vuex-module-validatable-state](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/vue-template-o46g3?fontsize=14)
+
+### Registering to Vuex Store
+
+```js
+const initialField = {
+  amount: 0,
+  description: null
+};
+
+const validators = {
+  amount: [
+    ({ amount }) => (!amount ? "Amount is required" : false),
+    ({ amount }) => (amount <= 0 ? "Amount should be greater than 0" : false)
+  ],
+  description: [
+    ({ amount, description }) =>
+      amount > 1000 && !description
+        ? "Description is required if amount is high"
+        : false
+  ]
+};
+
+const store = new Vuex.Store({
+  modules: {
+    ...theModule(initialField, validators)
+  }
+});
+```
+
+### Mapping to Component
+
+```vue
+<template>
+  <form>
+    <div>
+      <label for="amount">Amount (Required, Positive)</label>
+      <input type="number" name="amount" v-model="amount">
+      <span v-if="errors.amount">{{ errors.amount }}</span>
+    </div>
+    <div>
+      <label for="description">Description (Required if amount is greater than 1000)</label>
+      <textarea name="description" v-model="description"/>
+      <span v-if="errors.description">{{ errors.description }}</span>
+    </div>
+    <button @click.prevent="submit">Validate and Submit</button>
+  </form>
+</template>
+
+<script>
+import { GetterTypes, ActionTypes } from "vuex-module-validatable-state";
+
+export default {
+  name: "App",
+  computed: {
+    amount: {
+      get() {
+        return this.$store.getters[GetterTypes.FIELD_VALUES].amount;
+      },
+      set(value) {
+        this.$store.dispatch(ActionTypes.SET_FIELD_VALUE, {
+          name: "amount",
+          value
+        });
+      }
+    },
+    description: {
+      get() {
+        return this.$store.getters[GetterTypes.FIELD_VALUES].description;
+      },
+      set(value) {
+        this.$store.dispatch(ActionTypes.SET_FIELD_VALUE, {
+          name: "description",
+          value
+        });
+      }
+    },
+    errors() {
+      return this.$store.getters[GetterTypes.FIELD_ERRORS];
+    }
+  },
+  methods: {
+    submit() {
+      this.$store.dispatch(ActionTypes.ENABLE_ALL_VALIDATIONS).then(() => {
+        if (this.$store.getters[GetterTypes.ALL_FIELDS_VALID]) {
+          alert("Form is valid, so now submitting!");
+          this.$store.dispatch(ActionTypes.SET_FIELDS_PRISTINE);
+        }
+      });
+    }
+  }
+};
+</script>
+```
