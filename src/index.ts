@@ -1,4 +1,4 @@
-import { ActionTree, GetterTree, MutationTree, Store } from "vuex";
+import { ActionTree, GetterTree, MutationTree, Store, ModuleTree } from "vuex";
 
 interface FormField<T> {
   value: T;
@@ -104,7 +104,7 @@ interface InternalState<F> {
 const buildModule = <S, F>(
   initialFields: F,
   validators: ValidatorTree<F>
-) => {
+): ModuleTree<any> => {
   const stateFields = { fields: {}, validates: false } as InternalState<F>; // fields is not fulfilling the actual type...
   (Object.entries(initialFields) as [keyof F, F[keyof F]][]).forEach(([key, initialValue]) => {
     stateFields.fields[key] = initialStateOfField(initialValue);
