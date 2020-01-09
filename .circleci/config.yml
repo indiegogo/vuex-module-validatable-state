@@ -1,10 +1,10 @@
 version: 2
 jobs:
-  with_node8: &with_node8
+  with_node10: &with_node10
     docker:
-      - image: node:8
+      - image: node:10
         environment:
-          NODE_VERSION: 8
+          NODE_VERSION: 10
     steps:
       - checkout
 
@@ -30,16 +30,16 @@ jobs:
           paths:
             - ~/node_modules
 
-  with_node10:
-    <<: *with_node8
+  with_node12:
+    <<: *with_node10
     docker:
-      - image: node:10
+      - image: node:12
         environment:
-          NODE_VERSION: 10
+          NODE_VERSION: 12
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - with_node8
       - with_node10
+      - with_node12
