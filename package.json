@@ -35,7 +35,7 @@
     "ts-jest": "25.5.1",
     "typescript": "3.9.5",
     "vue": "2.6.11",
-    "vuex": "3.4.0"
+    "vuex": "3.5.1"
   },
   "jest": {
     "preset": "ts-jest"
