@@ -63,6 +63,7 @@ enum MutationTypes {
   SET_FIELD_EDITABILITY = "SET_FIELD_EDITABILITY",
   SET_FIELD_EDITABILITIES_BULK = "SET_FIELD_EDITABILITIES_BULK",
   SET_FIELD_DIRTINESS = "SET_FIELD_DIRTINESS",
+  ENABLE_VALIDATION = "ENABLE_VALIDATION",
   ENABLE_ALL_VALIDATIONS = "ENABLE_ALL_VALIDATIONS",
   SET_FIELDS_PRISTINE = "SET_FIELDS_PRISTINE"
 }
@@ -74,6 +75,7 @@ export enum ActionTypes {
   SET_FIELD_EDITABILITIES_BULK = "validatableStateSetFieldEditabilitiesBulk",
   RESET_FIELDS = "validatableStateResetFields",
   VALIDATE_FIELDS = "validatableStateValidateFields",
+  ENABLE_VALIDATION = "validatableStateEnableValidation",
   ENABLE_ALL_VALIDATIONS = "validatableStateEnableAllValidations",
   SET_FIELDS_PRISTINE = "validatableStateSetFieldsPristine"
 }
@@ -181,6 +183,10 @@ const buildModule = <S, F>(
       });
     },
 
+    [MutationTypes.ENABLE_VALIDATION] (state, name: keyof F) {
+      state.fields[name].isEnabledValidation = true;
+    },
+
     [MutationTypes.ENABLE_ALL_VALIDATIONS] (state) {
       (Object.keys(state.fields) as (keyof F)[]).forEach((fieldKey) => {
         state.fields[fieldKey].isEnabledValidation = true
@@ -245,6 +251,11 @@ const buildModule = <S, F>(
           }
         }
       });
+    },
+
+    async [ActionTypes.ENABLE_VALIDATION] <T extends keyof F> ({ dispatch, commit }, key: T) {
+      commit(MutationTypes.ENABLE_VALIDATION, key);
+      return dispatch(ActionTypes.VALIDATE_FIELDS);
     },
 
     async [ActionTypes.ENABLE_ALL_VALIDATIONS] ({ dispatch, commit }) {
