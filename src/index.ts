@@ -5,13 +5,15 @@ interface FormField<T> {
   error: string | false;
   disabled: boolean;
   dirty: boolean;
+  isEnabledValidation: boolean;
 }
 
 const initialStateOfField = <T>(initialValue: T): FormField<T> => ({
   value: initialValue,
   error: false,
   disabled: false,
-  dirty: false
+  dirty: false,
+  isEnabledValidation: false
 });
 
 interface ValidatableFieldsState<T> {
@@ -77,7 +79,6 @@ export enum ActionTypes {
 }
 interface InternalState<F> {
   fields: ValidatableFieldsState<F>["validatableState"];
-  validates: boolean;
 }
 
 /**
@@ -101,7 +102,7 @@ const buildModule = <S, F>(
   initialFields: F,
   validators: ValidatorTree<F>
 ): ModuleTree<any> => {
-  const stateFields = { fields: {}, validates: false } as InternalState<F>; // fields is not fulfilling the actual type...
+  const stateFields = { fields: {} } as InternalState<F>; // fields is not fulfilling the actual type...
   (Object.entries(initialFields) as [keyof F, F[keyof F]][]).forEach(([key, initialValue]) => {
     stateFields.fields[key] = initialStateOfField(initialValue);
   });
@@ -175,14 +176,15 @@ const buildModule = <S, F>(
     },
 
     [MutationTypes.INITIALIZE_FIELDS] (state, fields: { [key: string]: any; }) {
-      state.validates = false;
       Object.keys(state.fields).forEach((fieldKey) => {
         state.fields[fieldKey] = initialStateOfField(fields[fieldKey]);
       });
     },
 
     [MutationTypes.ENABLE_ALL_VALIDATIONS] (state) {
-      state.validates = true;
+      (Object.keys(state.fields) as (keyof F)[]).forEach((fieldKey) => {
+        state.fields[fieldKey].isEnabledValidation = true
+      });
     },
 
     [MutationTypes.SET_FIELDS_PRISTINE] (state) {
@@ -229,10 +231,10 @@ const buildModule = <S, F>(
             const validatorResult = validatorForField(getters[GetterTypes.FIELD_VALUES], getters);
 
             if (validatorResult instanceof Array) {
-              if (validatorResult[1].instant === true || state.validates) {
+              if (validatorResult[1].instant === true || state.fields[name].isEnabledValidation) {
                 errorForField = validatorResult[0](getters[GetterTypes.FIELD_VALUES], getters);
               }
-            } else if (state.validates) {
+            } else if (state.fields[name].isEnabledValidation) {
               errorForField = validatorResult;
             }
             return !!errorForField;

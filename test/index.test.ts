@@ -28,25 +28,27 @@ describe("vuex-validatable-field-module", () => {
     it("The store gets initial values and setup meta info on under the internal key", () => {
       const store = setupStore();
       expect(store.state[moduleInternalKey]).toEqual({
-        validates: false,
         fields: {
           age: {
             value: null,
             error: false,
             disabled: false,
-            dirty: false
+            dirty: false,
+            isEnabledValidation: false
           },
           name: {
             value: null,
             error: false,
             disabled: false,
-            dirty: false
+            dirty: false,
+            isEnabledValidation: false
           },
           subscribed: {
             value: false,
             error: false,
             disabled: false,
-            dirty: false
+            dirty: false,
+            isEnabledValidation: false
           }
         }
       });
@@ -83,11 +85,15 @@ describe("vuex-validatable-field-module", () => {
       expect(store.state[moduleInternalKey].fields.subscribed.value).toBe(true);
     });
 
-    it("ENABLE_ALL_VALIDATIONS updates all validateInteractively flags as true", () => {
+    it("ENABLE_ALL_VALIDATIONS updates all isEnabledValidation flag as true", () => {
       const store = setupStore();
-      expect(store.state[moduleInternalKey].validates).toBe(false);
+      expect(
+        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+      ).toEqual([false, false, false])
       store.commit("ENABLE_ALL_VALIDATIONS");
-      expect(store.state[moduleInternalKey].validates).toBe(true);
+      expect(
+        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+      ).toEqual([true, true, true])
     });
 
     it("SET_FIELD_DIRTINESS updates drity flag", () => {
@@ -367,7 +373,7 @@ describe("vuex-validatable-field-module", () => {
     });
 
     describe("VALIDATE_FIELDS", () => {
-      describe("state.validates is flagged", () => {
+      describe("isEnabledValidation is flagged", () => {
         it("store error message if validator returns", async () => {
           const mockAge = jest.fn().mockReturnValue("error message on age");
           const store = setupStore({
@@ -510,11 +516,15 @@ describe("vuex-validatable-field-module", () => {
     });
 
     describe("ENABLE_ALL_VALIDATIONS", () => {
-      it("enable validateInteractively flag on the specific field", () => {
+      it("enable all isEnabledValidation flag", () => {
         const store = setupStore();
-        expect(store.state[moduleInternalKey].validates).toBe(false);
+        expect(
+          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+        ).toEqual([false, false, false])
         store.dispatch(ActionTypes.ENABLE_ALL_VALIDATIONS);
-        expect(store.state[moduleInternalKey].validates).toBe(true);
+        expect(
+          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+        ).toEqual([true, true, true])
       });
     });
 
