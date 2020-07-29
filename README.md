@@ -124,8 +124,7 @@ Import `ActionTypes` from the module.
 |`ActionTypes.SET_FIELDS_BULK`|Set values for fields at once, then make all dirtiness flags false|
 |`ActionTypes.RESET_FIELDS`|Reset values on field with initial values|
 |`ActionTypes.ENABLE_ALL_VALIDATIONS`|Enable interactive validation and run validations for all fields|
-|`ActionTypes.VALIDATE_FIELD_VALUE`|Validate specific field|
-|`ActionTypes.VALIDATE_FIELDS`|Validate all fields|
+|`ActionTypes.VALIDATE_FIELDS`|Validate for each field that is enabled fro interactive validation|
 |`ActionTypes.SET_FIELDS_EDITABILITY`|Set editability flag for a field, disabled field is not updated nor validated|
 |`ActionTypes.SET_FIELDS_PRISTINE`|Make all dirtiness flags false|
 
