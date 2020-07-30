@@ -5,7 +5,7 @@ interface FormField<T> {
   error: string | false;
   disabled: boolean;
   dirty: boolean;
-  isEnabledValidation: boolean;
+  validationEnabled: boolean;
 }
 
 const initialStateOfField = <T>(initialValue: T): FormField<T> => ({
@@ -13,7 +13,7 @@ const initialStateOfField = <T>(initialValue: T): FormField<T> => ({
   error: false,
   disabled: false,
   dirty: false,
-  isEnabledValidation: false
+  validationEnabled: false
 });
 
 interface ValidatableFieldsState<T> {
@@ -185,12 +185,12 @@ const buildModule = <S, F>(
     },
 
     [MutationTypes.ENABLE_VALIDATION] (state, name: keyof F) {
-      state.fields[name].isEnabledValidation = true;
+      state.fields[name].validationEnabled = true;
     },
 
     [MutationTypes.ENABLE_ALL_VALIDATIONS] (state) {
       (Object.keys(state.fields) as (keyof F)[]).forEach((fieldKey) => {
-        state.fields[fieldKey].isEnabledValidation = true
+        state.fields[fieldKey].validationEnabled = true
       });
     },
 
@@ -238,10 +238,10 @@ const buildModule = <S, F>(
             const validatorResult = validatorForField(getters[GetterTypes.FIELD_VALUES], getters);
 
             if (validatorResult instanceof Array) {
-              if (validatorResult[1].instant === true || state.fields[name].isEnabledValidation) {
+              if (validatorResult[1].instant === true || state.fields[name].validationEnabled) {
                 errorForField = validatorResult[0](getters[GetterTypes.FIELD_VALUES], getters);
               }
-            } else if (state.fields[name].isEnabledValidation) {
+            } else if (state.fields[name].validationEnabled) {
               errorForField = validatorResult;
             }
             return !!errorForField;

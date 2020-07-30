@@ -34,21 +34,21 @@ describe("vuex-validatable-field-module", () => {
             error: false,
             disabled: false,
             dirty: false,
-            isEnabledValidation: false
+            validationEnabled: false
           },
           age: {
             value: null,
             error: false,
             disabled: false,
             dirty: false,
-            isEnabledValidation: false
+            validationEnabled: false
           },
           subscribed: {
             value: false,
             error: false,
             disabled: false,
             dirty: false,
-            isEnabledValidation: false
+            validationEnabled: false
           }
         }
       });
@@ -85,25 +85,25 @@ describe("vuex-validatable-field-module", () => {
       expect(store.state[moduleInternalKey].fields.subscribed.value).toBe(true);
     });
 
-    it("ENABLE_ALL_VALIDATIONS updates all isEnabledValidation flag as true", () => {
+    it("ENABLE_ALL_VALIDATIONS updates all validationEnabled flag as true", () => {
       const store = setupStore();
       expect(
-        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
       ).toEqual([false, false, false])
       store.commit("ENABLE_ALL_VALIDATIONS");
       expect(
-        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
       ).toEqual([true, true, true])
     });
 
-    it("ENABLE_VALIDATION updates isEnabledValidation flag on a specified field as true", () => {
+    it("ENABLE_VALIDATION updates validationEnabled flag on a specified field as true", () => {
       const store = setupStore();
       expect(
-        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
       ).toEqual([false, false, false])
       store.commit("ENABLE_VALIDATION", "subscribed");
       expect(
-        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+        Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
       ).toEqual([false, false, true])
     });
 
@@ -384,7 +384,7 @@ describe("vuex-validatable-field-module", () => {
     });
 
     describe("VALIDATE_FIELDS", () => {
-      describe("isEnabledValidation is flagged", () => {
+      describe("validationEnabled is flagged", () => {
         it("store error message if validator returns", async () => {
           const mockAge = jest.fn().mockReturnValue("error message on age");
           const store = setupStore({
@@ -527,27 +527,27 @@ describe("vuex-validatable-field-module", () => {
     });
 
     describe("ENABLE_ALL_VALIDATIONS", () => {
-      it("enable all isEnabledValidation flag", () => {
+      it("enable all validationEnabled flag", () => {
         const store = setupStore();
         expect(
-          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
         ).toEqual([false, false, false])
         store.dispatch(ActionTypes.ENABLE_ALL_VALIDATIONS);
         expect(
-          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
         ).toEqual([true, true, true])
       });
     });
 
     describe("ENABLE_VALIDATION", () => {
-      it("enable isEnabledValidation flag on a specified field", () => {
+      it("enable validationEnabled flag on a specified field", () => {
         const store = setupStore();
         expect(
-          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
         ).toEqual([false, false, false])
         store.dispatch(ActionTypes.ENABLE_VALIDATION, "age");
         expect(
-          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].isEnabledValidation)
+          Object.keys(store.state[moduleInternalKey].fields).map(key => store.state[moduleInternalKey].fields[key].validationEnabled)
         ).toEqual([false, true, false])
       });
     });
