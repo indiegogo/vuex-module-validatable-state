@@ -46,6 +46,7 @@ export type FieldDirtinesses<F> = {
 };
 
 export type SetFieldAction<F> = <T extends keyof F>(payload: { name: T ; value: F[T]; }) => void;
+export type EnableValidationAction<F> = <T extends keyof F>(payload: T) => void;
 
 export enum GetterTypes {
   ALL_FIELDS_VALID = "validatableStateAllFieldsValid",
