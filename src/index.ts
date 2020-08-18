@@ -25,9 +25,13 @@ interface ValidatableFieldsState<T> {
 type ValidationResult = false | string;
 interface ValidationOption { instant: boolean; }
 
-export type Validator<T> = (ValidatorWithoutOption<T> | ValidatorWithOption<T>);
-type ValidatorWithoutOption<T> = (fields: Partial<T>, getters?) => ValidationResult;
-type ValidatorWithOption<T> = () => [(fields: Partial<T>, getters?) => ValidationResult, ValidationOption];
+// In the consumer's end, [() => "error message", { instant: true; }] is inferred as (string | { instant: true })[]
+// So that doesn't match ValidatorWithOption's type: [() => ValidationResult, ValidationOption]
+// https://github.com/Microsoft/TypeScript/issues/16656
+// type Validator<T> = (ValidatorWithoutOption<T> | ValidatorWithOption<T>);
+// type ValidatorWithoutOption<T> = (fields: Partial<T>, getters?) => ValidationResult;
+// type ValidatorWithOption<T> = () => [(fields: Partial<T>) => ValidationResult, ValidationOption];
+export type Validator<T> = (fields?: Partial<T>, getters?) => ValidationResult | [(fields?: Partial<T>, getters?) => ValidationResult, ValidationOption];
 
 export type ValidatorTree<T> = {
   [key in keyof T]?: Validator<T>[];
