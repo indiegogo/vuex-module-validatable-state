@@ -5,13 +5,15 @@ interface FormField<T> {
   error: string | false;
   disabled: boolean;
   dirty: boolean;
+  validationEnabled: boolean;
 }
 
 const initialStateOfField = <T>(initialValue: T): FormField<T> => ({
   value: initialValue,
   error: false,
   disabled: false,
-  dirty: false
+  dirty: false,
+  validationEnabled: false
 });
 
 interface ValidatableFieldsState<T> {
@@ -44,6 +46,7 @@ export type FieldDirtinesses<F> = {
 };
 
 export type SetFieldAction<F> = <T extends keyof F>(payload: { name: T ; value: F[T]; }) => void;
+export type EnableValidationAction<F> = <T extends keyof F>(payload: T) => void;
 
 export enum GetterTypes {
   ALL_FIELDS_VALID = "validatableStateAllFieldsValid",
@@ -61,6 +64,7 @@ enum MutationTypes {
   SET_FIELD_EDITABILITY = "SET_FIELD_EDITABILITY",
   SET_FIELD_EDITABILITIES_BULK = "SET_FIELD_EDITABILITIES_BULK",
   SET_FIELD_DIRTINESS = "SET_FIELD_DIRTINESS",
+  ENABLE_VALIDATION = "ENABLE_VALIDATION",
   ENABLE_ALL_VALIDATIONS = "ENABLE_ALL_VALIDATIONS",
   SET_FIELDS_PRISTINE = "SET_FIELDS_PRISTINE"
 }
@@ -72,12 +76,12 @@ export enum ActionTypes {
   SET_FIELD_EDITABILITIES_BULK = "validatableStateSetFieldEditabilitiesBulk",
   RESET_FIELDS = "validatableStateResetFields",
   VALIDATE_FIELDS = "validatableStateValidateFields",
+  ENABLE_VALIDATION = "validatableStateEnableValidation",
   ENABLE_ALL_VALIDATIONS = "validatableStateEnableAllValidations",
   SET_FIELDS_PRISTINE = "validatableStateSetFieldsPristine"
 }
 interface InternalState<F> {
   fields: ValidatableFieldsState<F>["validatableState"];
-  validates: boolean;
 }
 
 /**
@@ -101,7 +105,7 @@ const buildModule = <S, F>(
   initialFields: F,
   validators: ValidatorTree<F>
 ): ModuleTree<any> => {
-  const stateFields = { fields: {}, validates: false } as InternalState<F>; // fields is not fulfilling the actual type...
+  const stateFields = { fields: {} } as InternalState<F>; // fields is not fulfilling the actual type...
   (Object.entries(initialFields) as [keyof F, F[keyof F]][]).forEach(([key, initialValue]) => {
     stateFields.fields[key] = initialStateOfField(initialValue);
   });
@@ -175,14 +179,19 @@ const buildModule = <S, F>(
     },
 
     [MutationTypes.INITIALIZE_FIELDS] (state, fields: { [key: string]: any; }) {
-      state.validates = false;
       Object.keys(state.fields).forEach((fieldKey) => {
         state.fields[fieldKey] = initialStateOfField(fields[fieldKey]);
       });
     },
 
+    [MutationTypes.ENABLE_VALIDATION] (state, name: keyof F) {
+      state.fields[name].validationEnabled = true;
+    },
+
     [MutationTypes.ENABLE_ALL_VALIDATIONS] (state) {
-      state.validates = true;
+      (Object.keys(state.fields) as (keyof F)[]).forEach((fieldKey) => {
+        state.fields[fieldKey].validationEnabled = true
+      });
     },
 
     [MutationTypes.SET_FIELDS_PRISTINE] (state) {
@@ -229,10 +238,10 @@ const buildModule = <S, F>(
             const validatorResult = validatorForField(getters[GetterTypes.FIELD_VALUES], getters);
 
             if (validatorResult instanceof Array) {
-              if (validatorResult[1].instant === true || state.validates) {
+              if (validatorResult[1].instant === true || state.fields[name].validationEnabled) {
                 errorForField = validatorResult[0](getters[GetterTypes.FIELD_VALUES], getters);
               }
-            } else if (state.validates) {
+            } else if (state.fields[name].validationEnabled) {
               errorForField = validatorResult;
             }
             return !!errorForField;
@@ -243,6 +252,11 @@ const buildModule = <S, F>(
           }
         }
       });
+    },
+
+    async [ActionTypes.ENABLE_VALIDATION] <T extends keyof F> ({ dispatch, commit }, key: T) {
+      commit(MutationTypes.ENABLE_VALIDATION, key);
+      return dispatch(ActionTypes.VALIDATE_FIELDS);
     },
 
     async [ActionTypes.ENABLE_ALL_VALIDATIONS] ({ dispatch, commit }) {
